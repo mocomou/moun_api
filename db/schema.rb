@@ -14,8 +14,9 @@ ActiveRecord::Schema.define(version: 2021_12_08_113338) do
 
   create_table "posts", charset: "utf8mb4", force: :cascade do |t|
     t.string "title"
-    t.integer "user_id"
     t.text "content"
+    t.string "sub"
+    t.string "user_name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
