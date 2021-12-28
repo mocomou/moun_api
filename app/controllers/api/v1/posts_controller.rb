@@ -6,7 +6,7 @@ class Api::V1::PostsController < ApplicationController
 
   # GET /api/v1/posts
   def index
-    @posts = Post.all
+    @posts = Post.order(id: :desc)
 
     render json: @posts
   end
