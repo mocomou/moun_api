@@ -1,5 +1,8 @@
 class Api::V1::PostsController < ApplicationController
-  before_action :set_post, only: [:show, :update, :destroy]
+  include Secured
+  before_action :authenticate_request!, only: [:create, :update, :destroy]
+  before_action :set_jwt_payload, only: [:create, :update, :destroy]
+  before_action :set_post, only: [:update, :destroy]
 
   # GET /api/v1/posts
   def index
@@ -10,12 +13,15 @@ class Api::V1::PostsController < ApplicationController
 
   # GET /api/v1/posts/1
   def show
+    @post = Post.find(params[:id])
     render json: @post
   end
 
   # POST /api/v1/posts
   def create
     @post = Post.new(post_params)
+    @post.sub = @sub
+    @post.user_name = @nickname
 
     if @post.save
       render json: @post, status: :created
@@ -41,11 +47,17 @@ class Api::V1::PostsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      @post = Post.find(params[:id])
+      @post = Post.where(sub: @sub).find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def post_params
       params.permit(:title, :user_id, :content)
+    end
+
+    def set_jwt_payload
+      @jwt_payload = JWT.decode(request.headers[:Authorization].split(' ')[1], nil, nil)
+      @sub = @jwt_payload[0]['sub']
+      @nickname = @jwt_payload[0]['nickname']
     end
 end
