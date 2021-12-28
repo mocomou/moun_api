@@ -1,6 +1,7 @@
 class PostSerializer < ActiveModel::Serializer
   attributes  :id,
               :title,
+              :content,
               :user_name,
               :created_at
 
