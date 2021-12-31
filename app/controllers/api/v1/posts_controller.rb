@@ -6,9 +6,15 @@ class Api::V1::PostsController < ApplicationController
 
   # GET /api/v1/posts
   def index
-    @posts = Post.order(id: :desc)
+    @posts = Post.order(id: :desc).page(params[:page]).per(24)
+    total_pages = @posts.total_pages
 
-    render json: @posts
+    response = {
+      posts: @posts,
+      total_pages: total_pages
+    }
+
+    render json: response
   end
 
   # GET /api/v1/posts/1
