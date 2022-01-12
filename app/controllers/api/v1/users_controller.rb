@@ -11,6 +11,7 @@ class Api::V1::UsersController < ApplicationController
   # GET /api/v1/users/1
   def show
     @user = User.find_by(user_name: params[:id])
+
     render json: @user
   end
 
