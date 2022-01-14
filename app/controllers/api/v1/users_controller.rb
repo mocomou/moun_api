@@ -1,5 +1,8 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :set_user, only: [:destroy]
+  include Secured
+  before_action :authenticate_request!, only: [:update, :destroy]
+  before_action :set_jwt_payload, only: [:update, :destroy]
+  before_action :set_user, only: [:update, :destroy]
 
   # GET /api/v1/users
   def index
@@ -19,7 +22,6 @@ class Api::V1::UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.user_icon.attach(params[:user_icon])
-
     if @user.save
       render json: @user, status: :created
     else
@@ -47,11 +49,17 @@ class Api::V1::UsersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params[:id])
+      @user = User.where(sub: @sub).find_by(user_name: params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def user_params
       params.permit(:user_name)
+    end
+
+    def set_jwt_payload
+      @jwt_payload = JWT.decode(request.headers[:Authorization].split(' ')[1], nil, nil)
+      @sub = @jwt_payload[0]['sub']
+      @nickname = @jwt_payload[0]['nickname']
     end
 end
