@@ -1,8 +1,8 @@
 class Api::V1::UsersController < ApplicationController
   include Secured
-  before_action :authenticate_request!, only: [:create, :update, :destroy]
-  before_action :set_jwt_payload, only: [:create, :update, :destroy]
-  before_action :set_user, only: [:create, :update, :destroy]
+  before_action :authenticate_request!, only: [:update, :destroy]
+  before_action :set_jwt_payload, only: [:update, :destroy]
+  before_action :set_user, only: [:update, :destroy]
 
   # GET /api/v1/users
   def index
@@ -21,10 +21,7 @@ class Api::V1::UsersController < ApplicationController
   # POST /api/v1/users
   def create
     @user = User.new(user_params)
-    @user.sub = @sub
-    @user.user_name = @nickname
     @user.user_icon.attach(params[:user_icon])
-
     if @user.save
       render json: @user, status: :created
     else
@@ -35,8 +32,6 @@ class Api::V1::UsersController < ApplicationController
   # PATCH/PUT /api/v1/users/1
   def update
     @user = User.find_by(user_name: params[:id])
-    @user.sub = @sub
-    @user.user_name = @nickname
     @user.user_icon.attach(params[:user_icon])
 
     if @user.update(user_params)
