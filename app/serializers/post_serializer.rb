@@ -3,13 +3,10 @@ class PostSerializer < ActiveModel::Serializer
               :title,
               :content,
               :user_name,
-              :created_at
-
-  # def user_name
-  #   object.user.user_name
-  # end
-
-  # def user_icon
-  #   object.user.user_icon
-  # end
+              :created_at,
+              :user_icon
+  
+  def user_icon
+    object.user.user_icon
+  end
 end

@@ -13,5 +13,4 @@ class UserSerializer < ActiveModel::Serializer
   def has_user_icon?
     object.user_icon.attached?
   end
-  # has_many :posts
 end
