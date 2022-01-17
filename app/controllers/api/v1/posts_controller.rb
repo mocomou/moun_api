@@ -9,12 +9,12 @@ class Api::V1::PostsController < ApplicationController
     @posts = Post.order(id: :desc).page(params[:page]).per(24)
     total_pages = @posts.total_pages
 
-    response = {
-      posts: @posts,
-      total_pages: total_pages
-    }
+    # response = {
+    #   posts: @posts,
+    #   total_pages: total_pages
+    # }
 
-    render json: response
+    render json: @posts, meta: {total_pages: total_pages}
   end
 
   # GET /api/v1/posts/1
@@ -25,9 +25,8 @@ class Api::V1::PostsController < ApplicationController
 
   # POST /api/v1/posts
   def create
-    @post = Post.new(post_params)
-    @post.sub = @sub
-    @post.user_name = @nickname
+    user = User.find_by(sub: @sub)
+    @post = user.posts.build(post_params)
 
     if @post.save
       render json: @post, status: :created
@@ -64,6 +63,6 @@ class Api::V1::PostsController < ApplicationController
     def set_jwt_payload
       @jwt_payload = JWT.decode(request.headers[:Authorization].split(' ')[1], nil, nil)
       @sub = @jwt_payload[0]['sub']
-      @nickname = @jwt_payload[0]['nickname']
+      # @nickname = @jwt_payload[0]['nickname']
     end
 end
