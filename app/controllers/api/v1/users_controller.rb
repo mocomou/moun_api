@@ -20,8 +20,9 @@ class Api::V1::UsersController < ApplicationController
   # GET /api/v1/users/1
   def show
     @user = User.find_by(user_name: params[:id])
-
-    render json: @user
+    user_posts = @user.posts.order(id: :desc).page(params[:page]).per(24)
+    total_pages = user_posts.total_pages
+    render json: @user, meta: {total_pages: total_pages, user_posts: user_posts}
   end
 
   # POST /api/v1/users
