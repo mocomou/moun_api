@@ -11,6 +11,7 @@ class Api::V1::UsersController < ApplicationController
     render json: @users
   end
 
+  # initial.vueで使う
   def search
     @user = User.find_by(sub: @sub)
     puts @user
@@ -22,7 +23,7 @@ class Api::V1::UsersController < ApplicationController
     @user = User.find_by(user_name: params[:id])
     user_posts = @user.posts.order(id: :desc).page(params[:page]).per(24)
     total_pages = user_posts.total_pages
-    render json: @user, meta: {total_pages: total_pages, user_posts: user_posts}
+    render json: @user, meta: {total_pages: total_pages}
   end
 
   # POST /api/v1/users
