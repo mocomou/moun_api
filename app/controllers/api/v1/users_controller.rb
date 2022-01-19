@@ -41,8 +41,10 @@ class Api::V1::UsersController < ApplicationController
   # PATCH/PUT /api/v1/users/1
   def update
     @user = User.find_by(user_name: params[:id])
-    @user.user_icon.attach(params[:user_icon])
-
+    if @user.user_icon.attached?
+      @user.user_icon.attach(params[:user_icon])
+    end
+    
     if @user.update(user_params)
       render json: @user
     else
