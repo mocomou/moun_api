@@ -40,11 +40,15 @@ class Api::V1::UsersController < ApplicationController
 
   # PATCH/PUT /api/v1/users/1
   def update
-    @user = User.find_by(user_name: params[:id])
-    @user.user_icon.attach(params[:user_icon])
+    @user = User.find_by(sub: @sub)
+    # @user = User.find_by(user_name: params[:id])
+    @user.user_name = params[:user_name]
+    if params[:user_icon]
+      @user.user_icon.attach(params[:user_icon])
+    end
 
     if @user.update(user_params)
-      render json: @user
+      render json: @user, status: :ok
     else
       render json: @user.errors, status: :unprocessable_entity
     end
