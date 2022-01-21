@@ -1,6 +1,7 @@
 class UserSerializer < ActiveModel::Serializer
   include Rails.application.routes.url_helpers
   attributes  :id,
+              :sub,
               :user_name
               # :posts
   attribute   :user_icon, if: :has_user_icon?
